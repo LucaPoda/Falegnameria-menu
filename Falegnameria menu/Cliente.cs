@@ -6,105 +6,34 @@ using System.Threading.Tasks;
 
 namespace Falegnameria_menu
 {
-    class Cliente
+    [Serializable]
+    public class Cliente
     {
-        private string nome;
-        private string cognome;
-        private int nfattura;
-        private int indiceprod;
-        private int totaleprodotti;
-        public Prodotto[] p = new Prodotto[500];
-        private double totalefattura;
+        public string Nome { get; set; }
+        public string Cognome { get; set; }
+        public int Numerofattura { get; set; }
+        public int IndiceProdotto { get; set; }
+        public List<Prodotto> ListaProdotti { get; set; }
+        public double TotaleFattura { get; set; }
+        public int Indice { get; set; }
 
         public Cliente()
         {
-            this.Nome = " ";
-            this.Cognome = " ";
-            this.Indiceprod = 0;
-            this.Nfattura = 1;
-            this.Totaleprodotti = 1;
-            //cliente1.p[1].nome 
-            for (int i = 0; i < 500; i++)
-            {
-                p[i] = new Prodotto();
-            }
+            ListaProdotti = new List<Prodotto>();
+            Nome = " ";
+            Cognome = " ";
+            IndiceProdotto = 0;
+            Numerofattura = 1;
         }
 
-        public string Nome
+        public void UpdateTotaleFattura()
         {
-            get
+            double n = 0;
+            foreach (var c in ListaProdotti)
             {
-                return nome;
+                n += c.Totale;
             }
-
-            set
-            {
-                nome = value;
-            }
-        }
-
-        public string Cognome
-        {
-            get
-            {
-                return cognome;
-            }
-
-            set
-            {
-                cognome = value;
-            }
-        }
-
-        public int Indiceprod
-        {
-            get
-            {
-                return indiceprod;
-            }
-            set
-            {
-                indiceprod = value;
-            }
-        }
-
-        public double Totalefattura
-        {
-            get
-            {
-                return totalefattura;
-            }
-
-            set
-            {
-                totalefattura = value;
-            }
-        }
-
-        public int Totaleprodotti
-        {
-            get
-            {
-                return totaleprodotti;
-            }
-
-            set
-            {
-                totaleprodotti = value;
-            }
-        }
-
-        public int Nfattura
-        {
-            get
-            {
-                return nfattura;
-            }
-
-            set
-            {
-                nfattura = value;
-            }
+            TotaleFattura = n;
         }
     }
 }

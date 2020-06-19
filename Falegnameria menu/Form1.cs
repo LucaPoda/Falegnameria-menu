@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.Office.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,355 +16,502 @@ namespace Falegnameria_menu
 {
     public partial class Form1 : Form
     {
-        Color std;
-        private Cliente Cliente1;
-        private int index;
-        private bool file_salvato;
-        /*Costruttore vuoto*/
+        public bool ShowHeaderInFiles { get; set; }
+        public Color Std { get; set; }
+        public Cliente Cliente {get; set; }
+        public string Nome { get; set; }
+
         public Form1()
         {
             InitializeComponent();
             /*index è il numero di fattura a cui si è arrivati per quel cliente*/
-            index = 1;
-            file_salvato = false;
-            Cliente1 = new Cliente();
+            
+            
+            //file_salvato = false;
+            Cliente = new Cliente();
             timer1.Enabled = true;
 
             /*Imposto i bottoni dei costi totali come predefiniti, colorandone il contorno: */
-            std = btnTotaleTrasporto.FlatAppearance.BorderColor;
-                /*Trasporto:*/
-                btnTotaleTrasporto.FlatAppearance.BorderColor = Color.RoyalBlue;
-                btnTotaleTrasporto.FlatAppearance.BorderSize = 2;
-                /*Accessori:*/
-                btnTotaleAccessori.FlatAppearance.BorderColor = Color.RoyalBlue;
-                btnTotaleAccessori.FlatAppearance.BorderSize = 2;
-                /*Posa:*/
-                btnTotalePosa.FlatAppearance.BorderColor = Color.RoyalBlue;
-                btnTotalePosa.FlatAppearance.BorderSize = 2;
+            Std = btnTotaleTrasporto.FlatAppearance.BorderColor;
+            /*Trasporto:*/
+            btnTotaleTrasporto.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnTotaleTrasporto.FlatAppearance.BorderSize = 2;
+            /*Accessori:*/
+            btnTotaleAccessori.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnTotaleAccessori.FlatAppearance.BorderSize = 2;
+            /*Posa:*/
+            btnTotalePosa.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnTotalePosa.FlatAppearance.BorderSize = 2;
+            /*Lavorazioni:*/
+            btnTotaleLavorazioni.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnTotaleLavorazioni.FlatAppearance.BorderSize = 2;
         }
 
-        /*Aggiorno la form principale ogni 100ms...*/
-        private void timer1_Tick(object sender, EventArgs e)
+        private void SalvaCliente()
+        { 
+            Cliente.Nome = txtNome.Text;
+            Cliente.Cognome = txtCognome.Text;
+
+            Cliente.Numerofattura = int.Parse(txtNfattura.Text);
+            Cliente.TotaleFattura = Convert.ToDouble(txtTotalefattura.Text);
+
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].NomeProdotto = txtProdotto.Text;
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].NumeroPezzi = System.Convert.ToInt32(txtNpezzi.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].PrezzoListino = Convert.ToDouble(txtListino.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].Sconto = Convert.ToDouble(txtSconto.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].Costo = Convert.ToDouble(txtCostoParziale.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].Ricarica = Convert.ToDouble(txtRicarica.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].Trasporto = Convert.ToDouble(txtTrasporto.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].Accessori = Convert.ToDouble(txtAccessori.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].Posa = Convert.ToDouble(txtPosa.Text);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale = Convert.ToDouble(txtTotale.Text);
+        }
+        
+        private bool IsDouble(string str)
         {
-            char[] numeri = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-            int result;
-
-            /*Evito bug sostituendo punti con le virgole nelle txtbox*/
-            /*Se la txtbox non contiene un numero inserisco 0,0 :D*/
-            txtListino.Text = txtListino.Text.Replace(".", ",");
-            result = txtListino.Text.IndexOfAny(numeri);
-            if (result == -1)
-                txtListino.Text = "0,0";
-
-            txtCostoParziale.Text = txtCostoParziale.Text.Replace(".", ",");
-            result = txtCostoParziale.Text.IndexOfAny(numeri);
-            if (result == -1)
-                txtCostoParziale.Text = "0,0";
-
-            txtSconto.Text = txtSconto.Text.Replace(".", ",");
-            result = txtSconto.Text.IndexOfAny(numeri);
-            if (result == -1)
-                txtSconto.Text = "0,0";
-
-            txtRicarica.Text = txtRicarica.Text.Replace(".", ",");
-            result = txtRicarica.Text.IndexOfAny(numeri);
-            if (result == -1)
-                txtRicarica.Text = "0,0";
-
-            txtTrasporto.Text = txtTrasporto.Text.Replace(".", ",");
-            result = txtTrasporto.Text.IndexOfAny(numeri);
-            if (result == -1)
-                txtTrasporto.Text = "0,0";
-
-            txtAccessori.Text = txtAccessori.Text.Replace(".", ",");
-            result = txtAccessori.Text.IndexOfAny(numeri);
-            if (result == -1)
-                txtAccessori.Text = "0,0";
-
-            txtPosa.Text = txtPosa.Text.Replace(".", ",");
-            result = txtPosa.Text.IndexOfAny(numeri);
-            if (result == -1)
-                txtPosa.Text = "0,0";
-
-            /*Se txtListino non è nullo*/
-            if (txtListino.Text != "0,0" && txtListino.Text != "" && txtListino.Text != "0" && txtListino.Text != " ")
+            foreach(var c in str)
             {
-                int a;
-                int.TryParse(txtNpezzi.Text, out a);
-                Cliente1.p[Cliente1.Indiceprod].Numeropezzi = a;
-                Cliente1.p[Cliente1.Indiceprod].Prezzo_listino = Convert.ToDouble(txtListino.Text);
-                Cliente1.p[Cliente1.Indiceprod].Sconto = Convert.ToDouble(txtSconto.Text);
-                Cliente1.p[Cliente1.Indiceprod].Ricarica = Convert.ToDouble(txtRicarica.Text);
-                Cliente1.p[Cliente1.Indiceprod].Trasporto = Convert.ToDouble(txtTrasporto.Text);
-                Cliente1.p[Cliente1.Indiceprod].Accessori = Convert.ToDouble(txtAccessori.Text);
-                Cliente1.p[Cliente1.Indiceprod].Posa = Convert.ToDouble(txtPosa.Text);
+                if (!char.IsDigit(c) && c != ',')
+                    return false;
+            }
+            return true;
+        }
+        
+        private bool IsInteger(string str)
+        {
+            foreach (var c in str)
+            {
+                if (!char.IsDigit(c))
+                    return false;
+            }
+            return true;
+        }
+        
+        private void UpdateValues(object sender, EventArgs e)
+        {
+            Console.WriteLine(12.3);
 
-                Cliente1.p[Cliente1.Indiceprod].Costo = Cliente1.p[Cliente1.Indiceprod].Numeropezzi * (Cliente1.p[Cliente1.Indiceprod].Prezzo_listino * (100 - Cliente1.p[Cliente1.Indiceprod].Sconto) / 100);
-                txtCostoParziale.Text = Convert.ToString(Cliente1.p[Cliente1.Indiceprod].Costo);
-                if (Cliente1.p[Cliente1.Indiceprod].Ricarica > 0)
-                    Cliente1.p[Cliente1.Indiceprod].Totale = Cliente1.p[Cliente1.Indiceprod].Costo + (Cliente1.p[Cliente1.Indiceprod].Costo) / 100 * Cliente1.p[Cliente1.Indiceprod].Ricarica + costi_aggiuntivi()/*trasporto + accessori + posa*/;
-                else
-                    Cliente1.p[Cliente1.Indiceprod].Totale = Cliente1.p[Cliente1.Indiceprod].Costo + Cliente1.p[Cliente1.Indiceprod].Trasporto + Cliente1.p[Cliente1.Indiceprod].Accessori + Cliente1.p[Cliente1.Indiceprod].Posa;
+            var s = (TextBox)sender;
 
-                txtTotale.Text = Convert.ToString(Cliente1.p[Cliente1.Indiceprod].Totale);
+            s.Text = s.Text.Replace('.', ',');
+
+            if(s == txtNpezzi)
+            {
+                if (!IsInteger(s.Text))
+                {
+                    try
+                    {
+                        s.Text = ((int) double.Parse(s.Text)).ToString();
+                    }
+                    catch(Exception)
+                    {
+                        s.Text = "1";
+                    }
+                        
+                }
+            }                   
+            if (!IsDouble(s.Text))
+                s.Text = "0";
+
+            double.TryParse(txtListino.Text, out double prezzoListino);
+            if (prezzoListino != 0 && !string.IsNullOrWhiteSpace(txtListino.Text))
+            {                
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].NumeroPezzi = int.Parse(txtNpezzi.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].PrezzoListino = double.Parse(txtListino.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Sconto = double.Parse(txtSconto.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Ricarica = double.Parse(txtRicarica.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Trasporto = double.Parse(txtTrasporto.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Accessori = double.Parse(txtAccessori.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Posa = double.Parse(txtPosa.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Lavorazioni = double.Parse(txtLavorazioni.Text);
+
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateCosto();
+                txtCostoParziale.Text = Convert.ToString(Cliente.ListaProdotti[Cliente.IndiceProdotto].Costo);
+
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+                txtTotale.Text = Convert.ToString(Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale);
+                
+                Cliente.UpdateTotaleFattura();                
+                txtTotalefattura.Text = Convert.ToString(Cliente.TotaleFattura);
             }
 
             /*Se txtListino è nullo significa che devo utilizzare solo txtcosto (il prodotto non è stato acquistato da un rivenditore*/
-            else if (txtCostoParziale.Text != "0,0" && txtCostoParziale.Text != "" && txtCostoParziale.Text != "0" && txtCostoParziale.Text != " ")
+            else if (prezzoListino != 0 && !string.IsNullOrWhiteSpace(txtListino.Text))
             {
-                Cliente1.p[Cliente1.Indiceprod].Numeropezzi = System.Convert.ToInt32(txtNpezzi.Text);
-                Cliente1.p[Cliente1.Indiceprod].Trasporto = Convert.ToDouble(txtTrasporto.Text);
-                Cliente1.p[Cliente1.Indiceprod].Accessori = Convert.ToDouble(txtAccessori.Text);
-                Cliente1.p[Cliente1.Indiceprod].Posa = Convert.ToDouble(txtPosa.Text);
-                Cliente1.p[Cliente1.Indiceprod].Costo = Convert.ToDouble(txtCostoParziale.Text);
-                //sì lo so quella sotto è una stringa del forza 4
-                //MessageBox.Show(" hai vinto!", "Vittoria del giocatore 1!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Cliente1.p[Cliente1.Indiceprod].Totale = Cliente1.p[Cliente1.Indiceprod].Numeropezzi * Cliente1.p[Cliente1.Indiceprod].Costo + costi_aggiuntivi();
-                txtTotale.Text = Convert.ToString(Cliente1.p[Cliente1.Indiceprod].Totale);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].NumeroPezzi = System.Convert.ToInt32(txtNpezzi.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Trasporto = Convert.ToDouble(txtTrasporto.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Accessori = Convert.ToDouble(txtAccessori.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Posa = Convert.ToDouble(txtPosa.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Lavorazioni = Convert.ToDouble(txtLavorazioni.Text);
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].Costo = Convert.ToDouble(txtCostoParziale.Text);
+
+                Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+                txtTotale.Text = Convert.ToString(Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale);
+            }
+            else
+                txtTotale.Text = "0";
+        }
+
+        private void AggiornaBordi()
+        {
+            //
+            // BtnTrasporto
+            //
+            if (Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaTrasporto)
+            {
+                btnUnitaTrasporto.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnUnitaTrasporto.FlatAppearance.BorderSize = 2;
+                btnTotaleTrasporto.FlatAppearance.BorderColor = Std;
+                btnTotaleTrasporto.FlatAppearance.BorderSize = 1;
+            }
+            else
+            {
+                btnTotaleTrasporto.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnTotaleTrasporto.FlatAppearance.BorderSize = 2;
+                btnUnitaTrasporto.FlatAppearance.BorderColor = Std;
+                btnUnitaTrasporto.FlatAppearance.BorderSize = 1;
+            }
+            //
+            // BtnAccessori
+            //
+            if (Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaAccessori)
+            {
+                btnUnitaAccessori.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnUnitaAccessori.FlatAppearance.BorderSize = 2;
+                btnTotaleAccessori.FlatAppearance.BorderColor = Std;
+                btnTotaleAccessori.FlatAppearance.BorderSize = 1;
+            }
+            else
+            {
+                btnTotaleAccessori.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnTotaleAccessori.FlatAppearance.BorderSize = 2;
+                btnUnitaAccessori.FlatAppearance.BorderColor = Std;
+                btnUnitaAccessori.FlatAppearance.BorderSize = 1;
+            }
+            //
+            // BtnPosa
+            //
+            if (Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaPosa)
+            {
+                btnUnitaPosa.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnUnitaPosa.FlatAppearance.BorderSize = 2;
+                btnTotalePosa.FlatAppearance.BorderColor = Std;
+                btnTotalePosa.FlatAppearance.BorderSize = 1;
+            }
+            else
+            {
+                btnTotalePosa.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnTotalePosa.FlatAppearance.BorderSize = 2;
+                btnUnitaPosa.FlatAppearance.BorderColor = Std;
+                btnUnitaPosa.FlatAppearance.BorderSize = 1;
+            }
+            //
+            // BtnLavorazioni
+            //
+            if (Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaLavorazioni)
+            {
+                btnUnitaLavorazioni.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnUnitaLavorazioni.FlatAppearance.BorderSize = 2;
+                btnTotaleLavorazioni.FlatAppearance.BorderColor = Std;
+                btnTotaleLavorazioni.FlatAppearance.BorderSize = 1;
+            }
+            else
+            {
+                btnTotaleLavorazioni.FlatAppearance.BorderColor = Color.RoyalBlue;
+                btnTotaleLavorazioni.FlatAppearance.BorderSize = 2;
+                btnUnitaLavorazioni.FlatAppearance.BorderColor = Std;
+                btnUnitaLavorazioni.FlatAppearance.BorderSize = 1;
             }
         }
-
-        /*Calcola costi per unità o totale per Trasporto, Accessori e Posa*/
-        public double costi_aggiuntivi()
+        //
+        // Evento form_load
+        private void Form1_Load(object sender, EventArgs e)
         {
-            /*moltiplico il costo per il valore della var. Unitatotale... che può essere uguale ad 1 (totale) o uguale ad Npezzi*/
-            return (Cliente1.p[Cliente1.Indiceprod].Trasporto * Cliente1.p[Cliente1.Indiceprod].Unitatotale_trasporto) +
-                (Cliente1.p[Cliente1.Indiceprod].Accessori * Cliente1.p[Cliente1.Indiceprod].Unitatotale_accessori) +
-                (Cliente1.p[Cliente1.Indiceprod].Posa * Cliente1.p[Cliente1.Indiceprod].Unitatotale_posa);
+            Cliente.ListaProdotti.Add(new Prodotto());
         }
-
-
-
-
-
-
-        /*Eventi bottoni unità trasporto:*/
-        /*Coloro di Blu il contorno del bottone selezionato e setto standard l'altro*/
+        //
+        //Eventi bottoni unità/totale:
+        //
         private void btnUnitaTrasporto_Click(object sender, EventArgs e)
         {
-            Cliente1.p[Cliente1.Indiceprod].Unitatotale_trasporto = Cliente1.p[Cliente1.Indiceprod].Numeropezzi;
+            int a;
+            int.TryParse(txtNpezzi.Text, out a);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaTrasporto = true;
 
-            btnUnitaTrasporto.FlatAppearance.BorderColor = Color.RoyalBlue;
-            btnUnitaTrasporto.FlatAppearance.BorderSize = 2;
-            btnTotaleTrasporto.FlatAppearance.BorderColor = std;
-            btnTotaleTrasporto.FlatAppearance.BorderSize = 1;
+            AggiornaBordi();
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
+
+            txtTotale.Text = Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale.ToString();
+            txtTotalefattura.Text = Cliente.TotaleFattura.ToString();
         }
 
         private void btnTotaleTrasporto_Click(object sender, EventArgs e)
         {
-            Cliente1.p[Cliente1.Indiceprod].Unitatotale_trasporto = 1;
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaTrasporto = false;
 
-            btnTotaleTrasporto.FlatAppearance.BorderColor = Color.RoyalBlue;
-            btnTotaleTrasporto.FlatAppearance.BorderSize = 2;
-            btnUnitaTrasporto.FlatAppearance.BorderColor = std;
-            btnUnitaTrasporto.FlatAppearance.BorderSize = 1;
+            AggiornaBordi();
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
+
+            txtTotale.Text = (Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale).ToString();
+            txtTotalefattura.Text = (Cliente.TotaleFattura).ToString();
         }
 
         private void btnUnitaAccessori_Click(object sender, EventArgs e)
         {
-            Cliente1.p[Cliente1.Indiceprod].Unitatotale_accessori = Cliente1.p[Cliente1.Indiceprod].Numeropezzi;
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaAccessori = true;
 
-            btnUnitaAccessori.FlatAppearance.BorderColor = Color.RoyalBlue;
-            btnUnitaAccessori.FlatAppearance.BorderSize = 2;
-            btnTotaleAccessori.FlatAppearance.BorderColor = std;
-            btnTotaleAccessori.FlatAppearance.BorderSize = 1;
+            AggiornaBordi();
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
+
+            txtTotale.Text = (Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale).ToString();
+            txtTotalefattura.Text = (Cliente.TotaleFattura).ToString();
         }
 
         private void btnTotaleAccessori_Click(object sender, EventArgs e)
         {
-            Cliente1.p[Cliente1.Indiceprod].Unitatotale_accessori = 1;
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaAccessori = false;
 
-            btnTotaleAccessori.FlatAppearance.BorderColor = Color.RoyalBlue;
-            btnTotaleAccessori.FlatAppearance.BorderSize = 2;
-            btnUnitaAccessori.FlatAppearance.BorderColor = std;
-            btnUnitaAccessori.FlatAppearance.BorderSize = 1;
+            AggiornaBordi();
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
+
+            txtTotale.Text = (Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale).ToString();
+            txtTotalefattura.Text = (Cliente.TotaleFattura).ToString();
         }
 
         private void btnUnitaPosa_Click(object sender, EventArgs e)
         {
-            Cliente1.p[Cliente1.Indiceprod].Unitatotale_posa = Cliente1.p[Cliente1.Indiceprod].Numeropezzi;
+            int a;
+            int.TryParse(txtNpezzi.Text, out a);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaPosa = true;
 
-            btnUnitaPosa.FlatAppearance.BorderColor = Color.RoyalBlue;
-            btnUnitaPosa.FlatAppearance.BorderSize = 2;
-            btnTotalePosa.FlatAppearance.BorderColor = std;
-            btnTotalePosa.FlatAppearance.BorderSize = 1;
+            AggiornaBordi();
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
+
+            txtTotale.Text = (Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale).ToString();
+            txtTotalefattura.Text = (Cliente.TotaleFattura).ToString();
         }
 
         private void btnTotalePosa_Click(object sender, EventArgs e)
         {
-            Cliente1.p[Cliente1.Indiceprod].Unitatotale_posa = 1;
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaPosa = false;
 
-            btnTotalePosa.FlatAppearance.BorderColor = Color.RoyalBlue;
-            btnTotalePosa.FlatAppearance.BorderSize = 2;
-            btnUnitaPosa.FlatAppearance.BorderColor = std;
-            btnUnitaPosa.FlatAppearance.BorderSize = 1;
+            AggiornaBordi();
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
+
+            txtTotale.Text = (Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale).ToString();
+            txtTotalefattura.Text = (Cliente.TotaleFattura).ToString();
         }
 
+        private void btnUnitaLavorazioni_Click(object sender, EventArgs e)
+        {
+            int a;
+            int.TryParse(txtNpezzi.Text, out a);
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaLavorazioni = true;
 
+            AggiornaBordi();
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
 
-        /*Click su menu strip*/
+            txtTotale.Text = (Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale).ToString();
+            txtTotalefattura.Text = (Cliente.TotaleFattura).ToString();
+        }
+
+        private void btnTotaleLavorazioni_Click(object sender, EventArgs e)
+        {
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UnitaLavorazioni = false;
+
+            btnTotaleLavorazioni.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnTotaleLavorazioni.FlatAppearance.BorderSize = 2;
+            btnUnitaLavorazioni.FlatAppearance.BorderColor = Std;
+            btnUnitaLavorazioni.FlatAppearance.BorderSize = 1;
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].UpdateTotale();
+            Cliente.UpdateTotaleFattura();
+
+            txtTotale.Text = (Cliente.ListaProdotti[Cliente.IndiceProdotto].Totale).ToString();
+            txtTotalefattura.Text = (Cliente.TotaleFattura).ToString();
+        }
+
+        // Eventi bottoni in basso
+
+        private void btnNuovoprodotto_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtNome.Text) || string.IsNullOrWhiteSpace(txtCognome.Text))
+            {
+                MessageBox.Show("Inserire nome e cognome!");
+                return;
+            }
+
+            SalvaCliente();
+
+            /*salvo il prodotto corrente nella combobox*/
+            cmbNumeroprodotto.Items.RemoveAt(Cliente.IndiceProdotto);
+            cmbNumeroprodotto.Items.Insert(Cliente.IndiceProdotto, Cliente.ListaProdotti[Cliente.IndiceProdotto].NomeProdotto);
+
+            // aggiungo un'elemento vuoto alla combobox
+
+            Cliente.ListaProdotti.Add(new Prodotto());
+            if (!string.IsNullOrWhiteSpace(cmbNumeroprodotto.Items[cmbNumeroprodotto.Items.Count - 1].ToString()))
+                cmbNumeroprodotto.Items.Add("");
+
+            Cliente.IndiceProdotto = Cliente.ListaProdotti.Count - 1;
+            cmbNumeroprodotto.SelectedIndex = Cliente.IndiceProdotto;
+        }
+
+        private void btnSovrascrivi_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(Nome))
+            {
+                File.Delete(Nome);
+                //scrittura();
+            }
+            else
+            {
+                btnSalva_Click(sender, e);
+            }
+        }
+
+        private void btnSalva_Click(object sender, EventArgs e)
+        {
+            WordFile.scrittura(ShowHeaderInFiles, Cliente);
+        }
+
+        private void btnStampa_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtNome.Text) && !string.IsNullOrWhiteSpace(txtCognome.Text))
+            {
+                SalvaCliente();
+                WordFile.scrittura(ShowHeaderInFiles, Cliente);
+                DataFile<Cliente> f = new DataFile<Cliente>("ArchivioFatture\\" + Nome + ".tnl");
+                f.Reset();
+                f.Scrvi(Cliente);
+            }
+
+            else
+                MessageBox.Show("Inserire il nome ed il cognome del cliente!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        // Eventi su menu strip
+
         private void aiutoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Chiama Marco!", "Sembra tu abbia una grave disabilità!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+        
         private void nuovoProdottoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             btnNuovoprodotto_Click(sender,e);
         }
+        
         private void nuovoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form1 Form = new Form1();
             Form.Show();
         }
+        
         private void salvaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             btnSovrascrivi_Click(sender, e);
         }
+        
         private void salvaConNomeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             btnSalva_Click(sender, e);
         }
+        
         private void stampaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             btnStampa_Click(sender, e);
         }
+        
         private void apriToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
-        /*Click su bottoni*/
-        private void btnNuovoprodotto_Click(object sender, EventArgs e)
+
+        // txt deselect
+
+        private void txtNome_Deselect(object sender, EventArgs e)
         {
-            /*Salvo i dati dell'oggetto cliente:*/
-            Cliente1.Totaleprodotti++;
-            Cliente1.Nome = txtNome.Text;
-            Cliente1.Cognome = txtCognome.Text;
-            Cliente1.Nfattura = int.Parse(txtNfattura.Text);
-            Cliente1.Totalefattura = Convert.ToDouble(txtTotalefattura.Text);
-            Cliente1.p[Cliente1.Indiceprod].Nomeprodotto = txtProdotto.Text;
-            Cliente1.p[Cliente1.Indiceprod].Numeropezzi = System.Convert.ToInt32(txtNpezzi.Text);
-            Cliente1.p[Cliente1.Indiceprod].Prezzo_listino = Convert.ToDouble(txtListino.Text);
-            Cliente1.p[Cliente1.Indiceprod].Sconto = Convert.ToDouble(txtSconto.Text);
-            Cliente1.p[Cliente1.Indiceprod].Costo = Convert.ToDouble(txtCostoParziale.Text);
-            Cliente1.p[Cliente1.Indiceprod].Ricarica = Convert.ToDouble(txtRicarica.Text);
-            Cliente1.p[Cliente1.Indiceprod].Trasporto = Convert.ToDouble(txtTrasporto.Text);
-            Cliente1.p[Cliente1.Indiceprod].Accessori = Convert.ToDouble(txtAccessori.Text);
-            Cliente1.p[Cliente1.Indiceprod].Posa = Convert.ToDouble(txtPosa.Text);
-            Cliente1.p[Cliente1.Indiceprod].Totale = Convert.ToDouble(txtTotale.Text);
-
-            /*aggiungere alla combo box*/
-            cmbNumeroprodotto.Items.Insert(Cliente1.Indiceprod, Cliente1.p[Cliente1.Indiceprod].Nomeprodotto);
-            Cliente1.Indiceprod ++;
-
-
-
-        }
-
-        private void btnSovrascrivi_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnSalva_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnStampa_Click(object sender, EventArgs e)
-        { /*
-            //creo l'applicazione
-            Word.Application wordApp = new Word.Application();
-            wordApp.Visible = true;
-            wordApp.WindowState = Word.WdWindowState.wdWindowStateNormal;
-            
-
-            //creo il documento
-            Word.Document wordDoc = wordApp.Documents.Add();
-            Word.Range docRange = wordDoc.Range();
-            
-            string imagePath = @"C:\Users\Marco\Desktop\definitivo\image.jpg";
-
-            // Create an InlineShape in the InlineShapes collection where the picture should be added later
-            // It is used to get automatically scaled sizes.
-            Word.InlineShape autoScaledInlineShape = docRange.InlineShapes.AddPicture(imagePath);
-            float scaledWidth = autoScaledInlineShape.Width;
-            float scaledHeight = autoScaledInlineShape.Height;
-            autoScaledInlineShape.Delete();
-
-            // Create a new Shape and fill it with the picture
-            Word.Shape newShape = wordDoc.Shapes.AddShape(1, 0, 0, scaledWidth, scaledHeight);
-            newShape.Fill.UserPicture(imagePath);
-
-            // Convert the Shape to an InlineShape and optional disable Border
-            Word.InlineShape finalInlineShape = newShape.ConvertToInlineShape();
-            finalInlineShape.Line.Visible = Microsoft.Office.Core.MsoTriState.msoFalse;
-
-            // Cut the range of the InlineShape to clipboard
-            finalInlineShape.Range.Cut();
-
-            // And paste it to the target Range
-            docRange.Paste();
-
-
-
-
- 
-            //aggiungo un paragrafo
-            Word.Paragraph objPara;
-            objPara = wordDoc.Paragraphs.Add();
-
-            objPara.Range.Text = "\r\nSOOOOOOOOOOOOOOOOS qui\n\n";
-            */
-
-            private void ImageToDocx(List<string> Images)
-        {
-            Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
-            Document wordDoc = wordApp.Documents.Add();
-            Range docRange = wordDoc.Range();
-
-            float mHeight = 0;
-            for (int i = 0; i <= Images.Count - 1; i++)
+            Cliente.Nome = txtNome.Text;
+            int index = 0;
+            do
             {
-                // Create an InlineShape in the InlineShapes collection where the picture should be added later
-                // It is used to get automatically scaled sizes.
-                InlineShape autoScaledInlineShape = docRange.InlineShapes.AddPicture(Images[i]);
-                float scaledWidth = autoScaledInlineShape.Width;
-                float scaledHeight = autoScaledInlineShape.Height;
-                mHeight += scaledHeight;
-                autoScaledInlineShape.Delete();
-
-                // Create a new Shape and fill it with the picture
-                Shape newShape = wordDoc.Shapes.AddShape(1, 0, 0, scaledWidth, mHeight);
-                newShape.Fill.UserPicture(Images[i]);
-
-                // Convert the Shape to an InlineShape and optional disable Border
-                InlineShape finalInlineShape = newShape.ConvertToInlineShape();
-                finalInlineShape.Line.Visible = Microsoft.Office.Core.MsoTriState.msoFalse;
-
-                // Cut the range of the InlineShape to clipboard
-                finalInlineShape.Range.Cut();
-
-                // And paste it to the target Range
-                docRange.Paste();
-            }
-
-
-
-            wordDoc.SaveAs("C:\\Users\\Marco\\Desktop\\definitivo\\Falegnameria menu\\Falegnameria menu\\ArchivioWord\\esempio.docx");
-            wordDoc.Close();
-            wordApp.Quit();
+                index++;
+                Nome = txtNome.Text + txtCognome.Text + index;
+            } while (File.Exists(Nome));
+            txtNfattura.Text = index.ToString();
+            Cliente.Indice = index;
         }
 
+        private void txtCognome_Deselect(object sender, EventArgs e)
+        {
+            Cliente.Cognome = txtCognome.Text;
+            int index = 0;
+            do
+            {
+                index++;
+                Nome = txtNome.Text + txtCognome.Text + index;
+            } while (File.Exists(Nome));
+            txtNfattura.Text = index.ToString();
+            Cliente.Indice = index;
+        }
+        
+        private void txtNomeProdotto_Deselect(object sender, EventArgs e)
+        {
+            Cliente.ListaProdotti[Cliente.IndiceProdotto].NomeProdotto = txtProdotto.Text;
+            cmbNumeroprodotto.Items.RemoveAt(Cliente.IndiceProdotto);
+            cmbNumeroprodotto.Items.Insert(Cliente.IndiceProdotto, txtProdotto.Text);
+            cmbNumeroprodotto.SelectedIndex = Cliente.IndiceProdotto;
+        }
+        //
+        // altro
+        //
+        private void cbxIntestazione_CheckedChanged(object sender, EventArgs e)
+        {
+            ShowHeaderInFiles = cbxIntestazione.Checked;
+        }
+
+        private void cmbNumeroprodotto_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Cliente.IndiceProdotto = cmbNumeroprodotto.SelectedIndex;
+            Prodotto p = Cliente.ListaProdotti[Cliente.IndiceProdotto];
+            txtProdotto.Text = p.NomeProdotto;
+            txtNpezzi.Text = p.NumeroPezzi.ToString();
+            txtListino.Text = p.PrezzoListino.ToString();
+            txtSconto.Text = p.Sconto.ToString();
+            txtCostoParziale.Text = p.Costo.ToString();
+            txtRicarica.Text = p.Ricarica.ToString();
+            txtTrasporto.Text = p.Trasporto.ToString();
+            txtAccessori.Text = p.Accessori.ToString();
+            txtPosa.Text = p.Posa.ToString();
+            txtLavorazioni.Text = p.Lavorazioni.ToString();
+            txtTotale.Text = p.Totale.ToString();
+
+            AggiornaBordi();
+
+            if (cmbNumeroprodotto.SelectedIndex == cmbNumeroprodotto.Items.Count - 1)
+                btnNuovoprodotto.Text = "Nuovo Prodotto";
+            else
+                btnNuovoprodotto.Text = "Aggiorna " + cmbNumeroprodotto.SelectedItem.ToString();
+        }
+
+        /*private void Form1_Closing(object sender, FormClosedEventArgs e)
+        {
+            MessageBoxButtons btns = MessageBoxButtons.YesNoCancel;
+            DialogResult result = MessageBox.Show("Stai uscendo senza salvare. \nVuoi salvare le modifiche al file ...?", "ërror", btns);
+            if (result == DialogResult.Yes)
+
+            if (result == DialogResult.No)
+                Close();
+            //if (result == DialogResult.Cancel)
 
 
-
-
-
-
-
-
-
-
-        /*if(logoToolStripMenuItem.Checked==true && contattiToolStripMenuItem.Checked == true)*/
+        }*/
     }
 }

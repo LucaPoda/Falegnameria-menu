@@ -1,4 +1,6 @@
-﻿namespace Falegnameria_menu
+﻿using System.Windows.Forms;
+
+namespace Falegnameria_menu
 {
     partial class Form1
     {
@@ -36,18 +38,20 @@
             this.btnTotaleTrasporto = new System.Windows.Forms.Button();
             this.btnUnitaTrasporto = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbxIntestazione = new System.Windows.Forms.CheckBox();
             this.txtTotalefattura = new System.Windows.Forms.TextBox();
             this.lblTotalefattura = new System.Windows.Forms.Label();
             this.lblNumeroProdotto = new System.Windows.Forms.Label();
             this.cmbNumeroprodotto = new System.Windows.Forms.ComboBox();
             this.txtNfattura = new System.Windows.Forms.TextBox();
             this.lblNfattura = new System.Windows.Forms.Label();
-            this.lblProdotto = new System.Windows.Forms.Label();
             this.lblCognome = new System.Windows.Forms.Label();
-            this.txtProdotto = new System.Windows.Forms.TextBox();
             this.txtCognome = new System.Windows.Forms.TextBox();
             this.txtNome = new System.Windows.Forms.TextBox();
             this.lblNome = new System.Windows.Forms.Label();
+            this.lblProdotto = new System.Windows.Forms.Label();
+            this.txtProdotto = new System.Windows.Forms.TextBox();
             this.btnNuovoprodotto = new System.Windows.Forms.Button();
             this.btnStampa = new System.Windows.Forms.Button();
             this.txtPosa = new System.Windows.Forms.TextBox();
@@ -99,6 +103,10 @@
             this.lblNpezzi = new System.Windows.Forms.Label();
             this.txtNpezzi = new System.Windows.Forms.TextBox();
             this.gbProdotto = new System.Windows.Forms.GroupBox();
+            this.lblLavorazioni = new System.Windows.Forms.Label();
+            this.txtLavorazioni = new System.Windows.Forms.TextBox();
+            this.btnTotaleLavorazioni = new System.Windows.Forms.Button();
+            this.btnUnitaLavorazioni = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -107,7 +115,6 @@
             // 
             // btnSovrascrivi
             // 
-            this.btnSovrascrivi.Enabled = false;
             this.btnSovrascrivi.Location = new System.Drawing.Point(173, 381);
             this.btnSovrascrivi.Name = "btnSovrascrivi";
             this.btnSovrascrivi.Size = new System.Drawing.Size(115, 23);
@@ -128,18 +135,19 @@
             // 
             // txtTrasporto
             // 
-            this.txtTrasporto.Location = new System.Drawing.Point(454, 43);
+            this.txtTrasporto.Location = new System.Drawing.Point(598, 43);
             this.txtTrasporto.Multiline = true;
             this.txtTrasporto.Name = "txtTrasporto";
             this.txtTrasporto.Size = new System.Drawing.Size(60, 58);
             this.txtTrasporto.TabIndex = 94;
-            this.txtTrasporto.Text = "0,0";
+            this.txtTrasporto.Text = "0";
             this.txtTrasporto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtTrasporto.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // btnTotaleTrasporto
             // 
             this.btnTotaleTrasporto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTotaleTrasporto.Location = new System.Drawing.Point(428, 72);
+            this.btnTotaleTrasporto.Location = new System.Drawing.Point(572, 72);
             this.btnTotaleTrasporto.Name = "btnTotaleTrasporto";
             this.btnTotaleTrasporto.Size = new System.Drawing.Size(30, 29);
             this.btnTotaleTrasporto.TabIndex = 93;
@@ -150,7 +158,7 @@
             // btnUnitaTrasporto
             // 
             this.btnUnitaTrasporto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUnitaTrasporto.Location = new System.Drawing.Point(428, 43);
+            this.btnUnitaTrasporto.Location = new System.Drawing.Point(572, 43);
             this.btnUnitaTrasporto.Name = "btnUnitaTrasporto";
             this.btnUnitaTrasporto.Size = new System.Drawing.Size(30, 29);
             this.btnUnitaTrasporto.TabIndex = 92;
@@ -160,38 +168,63 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.cbxIntestazione);
             this.groupBox1.Controls.Add(this.txtTotalefattura);
             this.groupBox1.Controls.Add(this.lblTotalefattura);
             this.groupBox1.Controls.Add(this.lblNumeroProdotto);
             this.groupBox1.Controls.Add(this.cmbNumeroprodotto);
             this.groupBox1.Controls.Add(this.txtNfattura);
             this.groupBox1.Controls.Add(this.lblNfattura);
-            this.groupBox1.Controls.Add(this.lblProdotto);
             this.groupBox1.Controls.Add(this.lblCognome);
-            this.groupBox1.Controls.Add(this.txtProdotto);
             this.groupBox1.Controls.Add(this.txtCognome);
             this.groupBox1.Controls.Add(this.txtNome);
             this.groupBox1.Controls.Add(this.lblNome);
             this.groupBox1.Location = new System.Drawing.Point(12, 66);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(675, 100);
+            this.groupBox1.Size = new System.Drawing.Size(878, 100);
             this.groupBox1.TabIndex = 91;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cliente:";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(564, 30);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(115, 13);
+            this.label1.TabIndex = 104;
+            this.label1.Text = "Immagine Intestazione:";
+            // 
+            // cbxIntestazione
+            // 
+            this.cbxIntestazione.AutoSize = true;
+            this.cbxIntestazione.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbxIntestazione.Checked = true;
+            this.cbxIntestazione.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxIntestazione.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.cbxIntestazione.Location = new System.Drawing.Point(615, 53);
+            this.cbxIntestazione.Name = "cbxIntestazione";
+            this.cbxIntestazione.Size = new System.Drawing.Size(15, 14);
+            this.cbxIntestazione.TabIndex = 103;
+            this.cbxIntestazione.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.cbxIntestazione.UseVisualStyleBackColor = true;
+            this.cbxIntestazione.CheckedChanged += new System.EventHandler(this.cbxIntestazione_CheckedChanged);
+            // 
             // txtTotalefattura
             // 
-            this.txtTotalefattura.Location = new System.Drawing.Point(562, 52);
+            this.txtTotalefattura.Location = new System.Drawing.Point(453, 53);
             this.txtTotalefattura.Name = "txtTotalefattura";
             this.txtTotalefattura.ReadOnly = true;
             this.txtTotalefattura.Size = new System.Drawing.Size(100, 20);
             this.txtTotalefattura.TabIndex = 102;
+            this.txtTotalefattura.Text = "0";
             this.txtTotalefattura.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // lblTotalefattura
             // 
             this.lblTotalefattura.AutoSize = true;
-            this.lblTotalefattura.Location = new System.Drawing.Point(570, 29);
+            this.lblTotalefattura.Location = new System.Drawing.Point(461, 30);
             this.lblTotalefattura.Name = "lblTotalefattura";
             this.lblTotalefattura.Size = new System.Drawing.Size(76, 13);
             this.lblTotalefattura.TabIndex = 101;
@@ -200,23 +233,26 @@
             // lblNumeroProdotto
             // 
             this.lblNumeroProdotto.AutoSize = true;
-            this.lblNumeroProdotto.Location = new System.Drawing.Point(341, 29);
+            this.lblNumeroProdotto.Location = new System.Drawing.Point(223, 29);
             this.lblNumeroProdotto.Name = "lblNumeroProdotto";
-            this.lblNumeroProdotto.Size = new System.Drawing.Size(87, 13);
+            this.lblNumeroProdotto.Size = new System.Drawing.Size(95, 13);
             this.lblNumeroProdotto.TabIndex = 100;
-            this.lblNumeroProdotto.Text = "Numero Prodotto";
+            this.lblNumeroProdotto.Text = "Visualizza prodotto";
             // 
             // cmbNumeroprodotto
             // 
             this.cmbNumeroprodotto.FormattingEnabled = true;
-            this.cmbNumeroprodotto.Location = new System.Drawing.Point(324, 52);
+            this.cmbNumeroprodotto.Items.AddRange(new object[] {
+            ""});
+            this.cmbNumeroprodotto.Location = new System.Drawing.Point(215, 53);
             this.cmbNumeroprodotto.Name = "cmbNumeroprodotto";
             this.cmbNumeroprodotto.Size = new System.Drawing.Size(121, 21);
             this.cmbNumeroprodotto.TabIndex = 99;
+            this.cmbNumeroprodotto.SelectedIndexChanged += new System.EventHandler(this.cmbNumeroprodotto_SelectedIndexChanged);
             // 
             // txtNfattura
             // 
-            this.txtNfattura.Location = new System.Drawing.Point(452, 52);
+            this.txtNfattura.Location = new System.Drawing.Point(343, 53);
             this.txtNfattura.Name = "txtNfattura";
             this.txtNfattura.ReadOnly = true;
             this.txtNfattura.Size = new System.Drawing.Size(100, 20);
@@ -226,20 +262,11 @@
             // lblNfattura
             // 
             this.lblNfattura.AutoSize = true;
-            this.lblNfattura.Location = new System.Drawing.Point(460, 29);
+            this.lblNfattura.Location = new System.Drawing.Point(351, 30);
             this.lblNfattura.Name = "lblNfattura";
             this.lblNfattura.Size = new System.Drawing.Size(80, 13);
             this.lblNfattura.TabIndex = 63;
             this.lblNfattura.Text = "Numero fattura:";
-            // 
-            // lblProdotto
-            // 
-            this.lblProdotto.AutoSize = true;
-            this.lblProdotto.Location = new System.Drawing.Point(242, 29);
-            this.lblProdotto.Name = "lblProdotto";
-            this.lblProdotto.Size = new System.Drawing.Size(50, 13);
-            this.lblProdotto.TabIndex = 29;
-            this.lblProdotto.Text = "Prodotto:";
             // 
             // lblCognome
             // 
@@ -250,19 +277,13 @@
             this.lblCognome.TabIndex = 62;
             this.lblCognome.Text = "Cognome:";
             // 
-            // txtProdotto
-            // 
-            this.txtProdotto.Location = new System.Drawing.Point(218, 53);
-            this.txtProdotto.Name = "txtProdotto";
-            this.txtProdotto.Size = new System.Drawing.Size(100, 20);
-            this.txtProdotto.TabIndex = 28;
-            // 
             // txtCognome
             // 
             this.txtCognome.Location = new System.Drawing.Point(112, 53);
             this.txtCognome.Name = "txtCognome";
             this.txtCognome.Size = new System.Drawing.Size(100, 20);
             this.txtCognome.TabIndex = 61;
+            this.txtCognome.LostFocus += new System.EventHandler(this.txtCognome_Deselect);
             // 
             // txtNome
             // 
@@ -270,6 +291,7 @@
             this.txtNome.Name = "txtNome";
             this.txtNome.Size = new System.Drawing.Size(100, 20);
             this.txtNome.TabIndex = 58;
+            this.txtNome.LostFocus += new System.EventHandler(this.txtNome_Deselect);
             // 
             // lblNome
             // 
@@ -279,6 +301,23 @@
             this.lblNome.Size = new System.Drawing.Size(38, 13);
             this.lblNome.TabIndex = 59;
             this.lblNome.Text = "Nome:";
+            // 
+            // lblProdotto
+            // 
+            this.lblProdotto.AutoSize = true;
+            this.lblProdotto.Location = new System.Drawing.Point(6, 29);
+            this.lblProdotto.Name = "lblProdotto";
+            this.lblProdotto.Size = new System.Drawing.Size(80, 13);
+            this.lblProdotto.TabIndex = 29;
+            this.lblProdotto.Text = "Nome prodotto:";
+            // 
+            // txtProdotto
+            // 
+            this.txtProdotto.Location = new System.Drawing.Point(6, 53);
+            this.txtProdotto.Name = "txtProdotto";
+            this.txtProdotto.Size = new System.Drawing.Size(132, 20);
+            this.txtProdotto.TabIndex = 28;
+            this.txtProdotto.LostFocus += new System.EventHandler(this.txtNomeProdotto_Deselect);
             // 
             // btnNuovoprodotto
             // 
@@ -302,18 +341,19 @@
             // 
             // txtPosa
             // 
-            this.txtPosa.Location = new System.Drawing.Point(694, 44);
+            this.txtPosa.Location = new System.Drawing.Point(782, 43);
             this.txtPosa.Multiline = true;
             this.txtPosa.Name = "txtPosa";
             this.txtPosa.Size = new System.Drawing.Size(60, 58);
             this.txtPosa.TabIndex = 88;
-            this.txtPosa.Text = "0,0";
+            this.txtPosa.Text = "0";
             this.txtPosa.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtPosa.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // btnTotalePosa
             // 
             this.btnTotalePosa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTotalePosa.Location = new System.Drawing.Point(668, 73);
+            this.btnTotalePosa.Location = new System.Drawing.Point(756, 72);
             this.btnTotalePosa.Name = "btnTotalePosa";
             this.btnTotalePosa.Size = new System.Drawing.Size(30, 29);
             this.btnTotalePosa.TabIndex = 87;
@@ -324,7 +364,7 @@
             // btnUnitaPosa
             // 
             this.btnUnitaPosa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUnitaPosa.Location = new System.Drawing.Point(668, 44);
+            this.btnUnitaPosa.Location = new System.Drawing.Point(756, 43);
             this.btnUnitaPosa.Name = "btnUnitaPosa";
             this.btnUnitaPosa.Size = new System.Drawing.Size(30, 29);
             this.btnUnitaPosa.TabIndex = 86;
@@ -334,18 +374,19 @@
             // 
             // txtAccessori
             // 
-            this.txtAccessori.Location = new System.Drawing.Point(573, 44);
+            this.txtAccessori.Location = new System.Drawing.Point(690, 43);
             this.txtAccessori.Multiline = true;
             this.txtAccessori.Name = "txtAccessori";
             this.txtAccessori.Size = new System.Drawing.Size(60, 58);
             this.txtAccessori.TabIndex = 85;
-            this.txtAccessori.Text = "0,0";
+            this.txtAccessori.Text = "0";
             this.txtAccessori.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtAccessori.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // btnTotaleAccessori
             // 
             this.btnTotaleAccessori.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTotaleAccessori.Location = new System.Drawing.Point(547, 73);
+            this.btnTotaleAccessori.Location = new System.Drawing.Point(664, 72);
             this.btnTotaleAccessori.Name = "btnTotaleAccessori";
             this.btnTotaleAccessori.Size = new System.Drawing.Size(30, 29);
             this.btnTotaleAccessori.TabIndex = 84;
@@ -356,7 +397,7 @@
             // btnUnitaAccessori
             // 
             this.btnUnitaAccessori.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUnitaAccessori.Location = new System.Drawing.Point(547, 44);
+            this.btnUnitaAccessori.Location = new System.Drawing.Point(664, 43);
             this.btnUnitaAccessori.Name = "btnUnitaAccessori";
             this.btnUnitaAccessori.Size = new System.Drawing.Size(30, 29);
             this.btnUnitaAccessori.TabIndex = 83;
@@ -366,17 +407,18 @@
             // 
             // txtCostoParziale
             // 
-            this.txtCostoParziale.Location = new System.Drawing.Point(245, 53);
+            this.txtCostoParziale.Location = new System.Drawing.Point(383, 53);
             this.txtCostoParziale.Name = "txtCostoParziale";
             this.txtCostoParziale.Size = new System.Drawing.Size(100, 20);
             this.txtCostoParziale.TabIndex = 82;
-            this.txtCostoParziale.Text = "0,0";
+            this.txtCostoParziale.Text = "0";
             this.txtCostoParziale.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtCostoParziale.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // lblPosa
             // 
             this.lblPosa.AutoSize = true;
-            this.lblPosa.Location = new System.Drawing.Point(676, 26);
+            this.lblPosa.Location = new System.Drawing.Point(764, 25);
             this.lblPosa.Name = "lblPosa";
             this.lblPosa.Size = new System.Drawing.Size(59, 13);
             this.lblPosa.TabIndex = 81;
@@ -385,7 +427,7 @@
             // lblTrasporto
             // 
             this.lblTrasporto.AutoSize = true;
-            this.lblTrasporto.Location = new System.Drawing.Point(436, 26);
+            this.lblTrasporto.Location = new System.Drawing.Point(580, 26);
             this.lblTrasporto.Name = "lblTrasporto";
             this.lblTrasporto.Size = new System.Drawing.Size(77, 13);
             this.lblTrasporto.TabIndex = 80;
@@ -394,7 +436,7 @@
             // lblRicarica
             // 
             this.lblRicarica.AutoSize = true;
-            this.lblRicarica.Location = new System.Drawing.Point(348, 29);
+            this.lblRicarica.Location = new System.Drawing.Point(486, 29);
             this.lblRicarica.Name = "lblRicarica";
             this.lblRicarica.Size = new System.Drawing.Size(60, 13);
             this.lblRicarica.TabIndex = 79;
@@ -403,7 +445,7 @@
             // lblCosto
             // 
             this.lblCosto.AutoSize = true;
-            this.lblCosto.Location = new System.Drawing.Point(274, 29);
+            this.lblCosto.Location = new System.Drawing.Point(412, 29);
             this.lblCosto.Name = "lblCosto";
             this.lblCosto.Size = new System.Drawing.Size(37, 13);
             this.lblCosto.TabIndex = 78;
@@ -411,44 +453,50 @@
             // 
             // txtRicarica
             // 
-            this.txtRicarica.Location = new System.Drawing.Point(351, 53);
+            this.txtRicarica.Location = new System.Drawing.Point(489, 53);
             this.txtRicarica.Name = "txtRicarica";
             this.txtRicarica.Size = new System.Drawing.Size(56, 20);
             this.txtRicarica.TabIndex = 76;
-            this.txtRicarica.Text = "0,0";
+            this.txtRicarica.Text = "0";
             this.txtRicarica.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtRicarica.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // txtListino
             // 
-            this.txtListino.Location = new System.Drawing.Point(80, 53);
+            this.txtListino.Location = new System.Drawing.Point(218, 53);
             this.txtListino.Name = "txtListino";
             this.txtListino.Size = new System.Drawing.Size(100, 20);
             this.txtListino.TabIndex = 75;
-            this.txtListino.Text = "0,0";
+            this.txtListino.Text = "0";
             this.txtListino.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtListino.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // txtTotale
             // 
-            this.txtTotale.Location = new System.Drawing.Point(778, 50);
+            this.txtTotale.Location = new System.Drawing.Point(944, 53);
             this.txtTotale.Name = "txtTotale";
             this.txtTotale.ReadOnly = true;
             this.txtTotale.Size = new System.Drawing.Size(100, 20);
             this.txtTotale.TabIndex = 74;
+            this.txtTotale.Tag = "";
+            this.txtTotale.Text = "0";
             this.txtTotale.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtTotale.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // txtSconto
             // 
-            this.txtSconto.Location = new System.Drawing.Point(187, 53);
+            this.txtSconto.Location = new System.Drawing.Point(325, 53);
             this.txtSconto.Name = "txtSconto";
             this.txtSconto.Size = new System.Drawing.Size(52, 20);
             this.txtSconto.TabIndex = 73;
-            this.txtSconto.Text = "0,0";
+            this.txtSconto.Text = "0";
             this.txtSconto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtSconto.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // lblTotale
             // 
             this.lblTotale.AutoSize = true;
-            this.lblTotale.Location = new System.Drawing.Point(803, 26);
+            this.lblTotale.Location = new System.Drawing.Point(1004, 29);
             this.lblTotale.Name = "lblTotale";
             this.lblTotale.Size = new System.Drawing.Size(40, 13);
             this.lblTotale.TabIndex = 72;
@@ -457,7 +505,7 @@
             // lblAccessori
             // 
             this.lblAccessori.AutoSize = true;
-            this.lblAccessori.Location = new System.Drawing.Point(561, 26);
+            this.lblAccessori.Location = new System.Drawing.Point(678, 25);
             this.lblAccessori.Name = "lblAccessori";
             this.lblAccessori.Size = new System.Drawing.Size(56, 13);
             this.lblAccessori.TabIndex = 71;
@@ -466,7 +514,7 @@
             // lblSconto
             // 
             this.lblSconto.AutoSize = true;
-            this.lblSconto.Location = new System.Drawing.Point(184, 29);
+            this.lblSconto.Location = new System.Drawing.Point(322, 29);
             this.lblSconto.Name = "lblSconto";
             this.lblSconto.Size = new System.Drawing.Size(58, 13);
             this.lblSconto.TabIndex = 70;
@@ -482,7 +530,7 @@
             this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(995, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1106, 24);
             this.menuStrip1.TabIndex = 98;
             this.menuStrip1.Text = "mnstripFile";
             // 
@@ -650,7 +698,7 @@
             this.barraDiStatoToolStripMenuItem.CheckOnClick = true;
             this.barraDiStatoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("barraDiStatoToolStripMenuItem.Image")));
             this.barraDiStatoToolStripMenuItem.Name = "barraDiStatoToolStripMenuItem";
-            this.barraDiStatoToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.barraDiStatoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.barraDiStatoToolStripMenuItem.Text = "File corrente";
             // 
             // formatoToolStripMenuItem
@@ -668,21 +716,21 @@
             this.logoToolStripMenuItem,
             this.contattiToolStripMenuItem});
             this.intestazioneToolStripMenuItem.Name = "intestazioneToolStripMenuItem";
-            this.intestazioneToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.intestazioneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.intestazioneToolStripMenuItem.Text = "Intestazione fattura";
             // 
             // logoToolStripMenuItem
             // 
             this.logoToolStripMenuItem.CheckOnClick = true;
             this.logoToolStripMenuItem.Name = "logoToolStripMenuItem";
-            this.logoToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.logoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.logoToolStripMenuItem.Text = "Logo";
             // 
             // contattiToolStripMenuItem
             // 
             this.contattiToolStripMenuItem.CheckOnClick = true;
             this.contattiToolStripMenuItem.Name = "contattiToolStripMenuItem";
-            this.contattiToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.contattiToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.contattiToolStripMenuItem.Text = "Contatti";
             // 
             // toolStripMenuItem1
@@ -697,7 +745,7 @@
             // 
             this.aiutoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("aiutoToolStripMenuItem.Image")));
             this.aiutoToolStripMenuItem.Name = "aiutoToolStripMenuItem";
-            this.aiutoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.aiutoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aiutoToolStripMenuItem.Text = "Aiuto";
             this.aiutoToolStripMenuItem.Click += new System.EventHandler(this.aiutoToolStripMenuItem_Click);
             // 
@@ -713,7 +761,7 @@
             // lblListino
             // 
             this.lblListino.AutoSize = true;
-            this.lblListino.Location = new System.Drawing.Point(90, 29);
+            this.lblListino.Location = new System.Drawing.Point(228, 29);
             this.lblListino.Name = "lblListino";
             this.lblListino.Size = new System.Drawing.Size(79, 13);
             this.lblListino.TabIndex = 102;
@@ -722,7 +770,7 @@
             // lblNpezzi
             // 
             this.lblNpezzi.AutoSize = true;
-            this.lblNpezzi.Location = new System.Drawing.Point(16, 29);
+            this.lblNpezzi.Location = new System.Drawing.Point(154, 29);
             this.lblNpezzi.Name = "lblNpezzi";
             this.lblNpezzi.Size = new System.Drawing.Size(47, 13);
             this.lblNpezzi.TabIndex = 101;
@@ -730,21 +778,28 @@
             // 
             // txtNpezzi
             // 
-            this.txtNpezzi.Location = new System.Drawing.Point(6, 53);
+            this.txtNpezzi.Location = new System.Drawing.Point(144, 53);
             this.txtNpezzi.Name = "txtNpezzi";
             this.txtNpezzi.Size = new System.Drawing.Size(68, 20);
             this.txtNpezzi.TabIndex = 100;
             this.txtNpezzi.Text = "1";
             this.txtNpezzi.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtNpezzi.Leave += new System.EventHandler(this.UpdateValues);
             // 
             // gbProdotto
             // 
+            this.gbProdotto.Controls.Add(this.lblLavorazioni);
+            this.gbProdotto.Controls.Add(this.txtLavorazioni);
+            this.gbProdotto.Controls.Add(this.btnTotaleLavorazioni);
+            this.gbProdotto.Controls.Add(this.btnUnitaLavorazioni);
             this.gbProdotto.Controls.Add(this.lblNpezzi);
             this.gbProdotto.Controls.Add(this.lblListino);
             this.gbProdotto.Controls.Add(this.lblSconto);
             this.gbProdotto.Controls.Add(this.lblAccessori);
+            this.gbProdotto.Controls.Add(this.lblProdotto);
             this.gbProdotto.Controls.Add(this.txtNpezzi);
             this.gbProdotto.Controls.Add(this.lblTotale);
+            this.gbProdotto.Controls.Add(this.txtProdotto);
             this.gbProdotto.Controls.Add(this.txtSconto);
             this.gbProdotto.Controls.Add(this.txtTotale);
             this.gbProdotto.Controls.Add(this.txtListino);
@@ -765,20 +820,58 @@
             this.gbProdotto.Controls.Add(this.txtAccessori);
             this.gbProdotto.Location = new System.Drawing.Point(12, 186);
             this.gbProdotto.Name = "gbProdotto";
-            this.gbProdotto.Size = new System.Drawing.Size(908, 126);
+            this.gbProdotto.Size = new System.Drawing.Size(1050, 126);
             this.gbProdotto.TabIndex = 103;
             this.gbProdotto.TabStop = false;
             this.gbProdotto.Text = "Prodotto attuale:";
             // 
-            // timer1
+            // lblLavorazioni
             // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.lblLavorazioni.AutoSize = true;
+            this.lblLavorazioni.Location = new System.Drawing.Point(852, 26);
+            this.lblLavorazioni.Name = "lblLavorazioni";
+            this.lblLavorazioni.Size = new System.Drawing.Size(86, 13);
+            this.lblLavorazioni.TabIndex = 103;
+            this.lblLavorazioni.Text = "Costi lavorazioni:";
+            // 
+            // txtLavorazioni
+            // 
+            this.txtLavorazioni.Location = new System.Drawing.Point(878, 43);
+            this.txtLavorazioni.Multiline = true;
+            this.txtLavorazioni.Name = "txtLavorazioni";
+            this.txtLavorazioni.Size = new System.Drawing.Size(60, 58);
+            this.txtLavorazioni.TabIndex = 106;
+            this.txtLavorazioni.Text = "0";
+            this.txtLavorazioni.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtLavorazioni.Leave += new System.EventHandler(this.UpdateValues);
+            // 
+            // btnTotaleLavorazioni
+            // 
+            this.btnTotaleLavorazioni.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTotaleLavorazioni.Location = new System.Drawing.Point(848, 72);
+            this.btnTotaleLavorazioni.Name = "btnTotaleLavorazioni";
+            this.btnTotaleLavorazioni.Size = new System.Drawing.Size(30, 29);
+            this.btnTotaleLavorazioni.TabIndex = 105;
+            this.btnTotaleLavorazioni.Text = "T";
+            this.btnTotaleLavorazioni.UseVisualStyleBackColor = true;
+            this.btnTotaleLavorazioni.Click += new System.EventHandler(this.btnTotaleLavorazioni_Click);
+            // 
+            // btnUnitaLavorazioni
+            // 
+            this.btnUnitaLavorazioni.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnitaLavorazioni.Location = new System.Drawing.Point(848, 44);
+            this.btnUnitaLavorazioni.Name = "btnUnitaLavorazioni";
+            this.btnUnitaLavorazioni.Size = new System.Drawing.Size(30, 29);
+            this.btnUnitaLavorazioni.TabIndex = 104;
+            this.btnUnitaLavorazioni.Text = "U";
+            this.btnUnitaLavorazioni.UseVisualStyleBackColor = true;
+            this.btnUnitaLavorazioni.Click += new System.EventHandler(this.btnUnitaLavorazioni_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(995, 461);
+            this.ClientSize = new System.Drawing.Size(1106, 461);
             this.Controls.Add(this.gbProdotto);
             this.Controls.Add(this.btnSovrascrivi);
             this.Controls.Add(this.btnSalva);
@@ -789,6 +882,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "Form1";
             this.Text = "Fattura";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -872,6 +966,12 @@
         private System.Windows.Forms.ToolStripMenuItem logoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem contattiToolStripMenuItem;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.CheckBox cbxIntestazione;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblLavorazioni;
+        private System.Windows.Forms.TextBox txtLavorazioni;
+        private System.Windows.Forms.Button btnTotaleLavorazioni;
+        private System.Windows.Forms.Button btnUnitaLavorazioni;
     }
 }
 

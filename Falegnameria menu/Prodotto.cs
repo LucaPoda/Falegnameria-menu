@@ -6,208 +6,87 @@ using System.Threading.Tasks;
 
 namespace Falegnameria_menu
 {
-    class Prodotto
+    [Serializable]
+    public class Prodotto
     {
-        private string nomeprodotto;
-        private int numeropezzi;
-        private double prezzo_listino;
-        private double sconto;
-        private double costo;
-        private double ricarica;
-        private double trasporto;
-        private double accessori;
-        private double posa;
-        private double totale;
-
-        private int unitatotale_trasporto;
-        private int unitatotale_accessori;
-        private int unitatotale_posa;
+        public string NomeProdotto { get; set; }
+        public int NumeroPezzi { get; set; }
+        public double PrezzoListino { get; set; }
+        public double Sconto { get; set; }
+        public double Costo { get; set; }
+        public double Ricarica { get; set; }
+        public double Trasporto { get; set; }
+        public double Accessori { get; set; }
+        public double Posa { get; set; }
+        public double Lavorazioni { get; set; }
+        public double Totale { get; set; }
+        public bool UnitaTrasporto { get; set; }
+        public bool UnitaAccessori { get; set; }
+        public bool UnitaPosa { get; set; }
+        public bool UnitaLavorazioni { get; set; }
 
         public Prodotto()
         {
-            Nomeprodotto = "";
-            Numeropezzi = 1;
-            Prezzo_listino = 0.0;
+            NomeProdotto = "";
+            NumeroPezzi = 1;
+            PrezzoListino = 0;
             Sconto = 0;
-            Costo = 0.0;
+            Costo = 0;
             Ricarica = 0;
-            Trasporto = 0.0;
-            Accessori = 0.0;
-            Posa = 0.0;
+            Trasporto = 0;
+            Accessori = 0;
+            Posa = 0;
+            Lavorazioni = 0;
             Totale = 0;
 
-            Unitatotale_trasporto = 1;
-            Unitatotale_accessori = 1;
-            Unitatotale_posa = 1;
+            UnitaTrasporto = false;
+            UnitaAccessori = false;
+            UnitaPosa = false;
+            UnitaLavorazioni = false;
         }
 
-        public string Nomeprodotto
+        public double UpdateCosto()
         {
-            get
-            {
-                return nomeprodotto;
-            }
-
-            set
-            {
-                nomeprodotto = value;
-            }
+            Costo = NumeroPezzi * (PrezzoListino * (100 - Sconto) / 100);
+            return Costo;
         }
 
-        public int Numeropezzi
+        public double UpdateTotale()
         {
-            get
-            {
-                return numeropezzi;
-            }
+            if (Ricarica > 0)
+                Totale = Costo + (Costo) / 100 * Ricarica;
+            else
+                Totale = Costo;
 
-            set
-            {
-                numeropezzi = value;
-            }
+            Totale += CalcolaCostiAggiuntivi();
+            return Totale;
         }
 
-        public double Prezzo_listino
+        public double CalcolaCostiAggiuntivi()
         {
-            get
-            {
-                return prezzo_listino;
-            }
+            double prezzo = 0;
 
-            set
-            {
-                prezzo_listino = value;
-            }
-        }
+            if (UnitaTrasporto)
+                prezzo += Trasporto * NumeroPezzi;
+            else
+                prezzo += Trasporto;
 
-        public double Sconto
-        {
-            get
-            {
-                return sconto;
-            }
+            if (UnitaPosa)
+                prezzo += Posa * NumeroPezzi;
+            else
+                prezzo += Posa;
 
-            set
-            {
-                sconto = value;
-            }
-        }
+            if (UnitaAccessori)
+                prezzo += Accessori * NumeroPezzi;
+            else
+                prezzo += Accessori;
 
-        public double Costo
-        {
-            get
-            {
-                return costo;
-            }
+            if (UnitaLavorazioni)
+                prezzo += Lavorazioni * NumeroPezzi;
+            else
+                prezzo += Lavorazioni;
 
-            set
-            {
-                costo = value;
-            }
-        }
-
-        public double Ricarica
-        {
-            get
-            {
-                return ricarica;
-            }
-
-            set
-            {
-                ricarica = value;
-            }
-        }
-
-        public double Trasporto
-        {
-            get
-            {
-                return trasporto;
-            }
-
-            set
-            {
-                trasporto = value;
-            }
-        }
-
-        public double Accessori
-        {
-            get
-            {
-                return accessori;
-            }
-
-            set
-            {
-                accessori = value;
-            }
-        }
-
-        public double Posa
-        {
-            get
-            {
-                return posa;
-            }
-
-            set
-            {
-                posa = value;
-            }
-        }
-
-        public double Totale
-        {
-            get
-            {
-                return totale;
-            }
-
-            set
-            {
-                totale = value;
-            }
-        }
-
-        public int Unitatotale_trasporto
-        {
-            get
-            {
-                return unitatotale_trasporto;
-            }
-
-            set
-            {
-                unitatotale_trasporto = value;
-            }
-        }
-
-        public int Unitatotale_accessori
-        {
-            get
-            {
-                return unitatotale_accessori;
-            }
-
-            set
-            {
-                unitatotale_accessori = value;
-            }
-        }
-
-        public int Unitatotale_posa
-        {
-            get
-            {
-                return unitatotale_posa;
-            }
-
-            set
-            {
-                unitatotale_posa = value;
-            }
+            return prezzo;
         }
     }
 }
